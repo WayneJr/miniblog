@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: moderation-depl
+  namespace: eks-sample-app
+  labels:
+    app: moderation-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: moderation
+  template:
+    metadata:
+      labels:
+        app: moderation
+    spec:
+      containers:
+        - name: moderation
+          image: 559296319768.dkr.ecr.us-east-1.amazonaws.com/moderation
+          ports:
+            - containerPort: 4003
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: moderation-clusterip-srv
+  namespace: eks-sample-app
+  labels:
+    app: moderation-clusterip-srv
+spec:
+  selector:
+    app: moderation
+  type: ClusterIP
+  ports:
+    - name: moderation
+      protocol: TCP
+      port: 4003
+      targetPort: 4003

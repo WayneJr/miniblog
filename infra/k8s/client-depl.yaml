@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-depl
+  namespace: eks-sample-app
+  labels:
+    app: client-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: client
+  template:
+    metadata:
+      labels:
+        app: client
+    spec:
+      containers:
+        - name: client
+          image: 559296319768.dkr.ecr.us-east-1.amazonaws.com/client
+          ports:
+            - containerPort: 4001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-clusterip-srv
+  namespace: eks-sample-app
+  labels:
+    app: client-clusterip-srv
+spec:
+  selector:
+    app: client
+  type: ClusterIP
+  ports:
+    - name: client
+      protocol: TCP
+      port: 4001
+      targetPort: 4001
